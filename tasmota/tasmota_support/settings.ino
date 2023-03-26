@@ -1268,6 +1268,7 @@ void SettingsDefaultSet2(void) {
   Settings->flag5 = flag5;
   Settings->flag6 = flag6;
   Settings->mbflag2 = mbflag2;
+  Settings->flag4.only_json_message;
 }
 
 void SettingsDefaultSet3(void) {
