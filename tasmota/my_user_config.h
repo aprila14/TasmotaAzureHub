@@ -420,9 +420,9 @@
 #define MQTT_DISABLE_SSERIALRECEIVED 0           // 1 = Disable sserialreceived mqtt messages, 0 = Enable sserialreceived mqtt messages (default)
 
 // -- MQTT - Domoticz -----------------------------
-#define USE_DOMOTICZ                             // Enable Domoticz (+6k code, +0.3k mem)
-  #define DOMOTICZ_IN_TOPIC    "domoticz/in"     // Domoticz Input Topic
-  #define DOMOTICZ_OUT_TOPIC   "domoticz/out"    // Domoticz Output Topic
+// #define USE_DOMOTICZ                             // Enable Domoticz (+6k code, +0.3k mem)
+  // #define DOMOTICZ_IN_TOPIC    "domoticz/in"     // Domoticz Input Topic
+  // #define DOMOTICZ_OUT_TOPIC   "domoticz/out"    // Domoticz Output Topic
 
 // -- MQTT - Home Assistant Discovery -------------
 //#define USE_HOME_ASSISTANT                                   // Enable Home Assistant Discovery Support (+12k code, +6 bytes mem)
@@ -460,14 +460,14 @@
 
 // -- KNX IP Protocol -----------------------------
 //#define USE_KNX                                  // Enable KNX IP Protocol Support (+9.4k code, +3k7 mem)
-  #define USE_KNX_WEB_MENU                       // Enable KNX WEB MENU (+8.3k code, +144 mem)
+  // #define USE_KNX_WEB_MENU                       // Enable KNX WEB MENU (+8.3k code, +144 mem)
 
 // -- HTTP ----------------------------------------
 #define USE_WEBSERVER                            // Enable web server and Wi-Fi Manager (+66k code, +8k mem)
   #define WEB_PORT             80                // Web server Port for User and Admin mode
   #define WEB_USERNAME         "admin"           // Web server Admin mode user name
 //  #define DISABLE_REFERER_CHK                     // [SetOption128] Disable HTTP API
-  #define USE_ENHANCED_GUI_WIFI_SCAN             // Enable Wi-Fi scan output with BSSID (+0k5 code)
+  // #define USE_ENHANCED_GUI_WIFI_SCAN             // Enable Wi-Fi scan output with BSSID (+0k5 code)
 //  #define USE_WEBSEND_RESPONSE                   // Enable command WebSend response message (+1k code)
 //  #define USE_WEBGETCONFIG                       // Enable restoring config from external webserver (+0k6)
   // #define USE_EMULATION_HUE                      // Enable Hue Bridge emulation for Alexa (+14k code, +2k mem common)
@@ -496,8 +496,12 @@
 #define USE_RULES                                // Add support for rules (+8k code)
 //  #define USE_EXPRESSION                         // Add support for expression evaluation in rules (+3k2 code, +64 bytes mem)
 //    #define SUPPORT_IF_STATEMENT                 // Add support for IF statement in rules (+4k2 code, -332 bytes mem)
-//  #define USER_RULE1 "<Any rule1 data>"          // Add rule1 data saved at initial firmware load or when command reset is executed
-//  #define USER_RULE2 "<Any rule2 data>"          // Add rule2 data saved at initial firmware load or when command reset is executed
+// Rule 1: Send data every 6 hours (21600 seconds)
+// char custom_rule1[] = "on system#boot do ruletimer1 21600 endon on Rules#Timer=1 do backlog var1 %uptime%; var2 %voltage%; var3 %power%; var4 %totalpower%; var5 %status%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; publish your_topic/total_power %var4%; publish your_topic/status %var5%; ruletimer1 21600 endon";
+ #define USER_RULE1 "on system#boot do ruletimer1 60 endon on Rules#Timer=1 do backlog var1 %uptime%; var2 %voltage%; var3 %power%; var4 %totalpower%; var5 %status%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; publish your_topic/total_power %var4%; publish your_topic/status %var5%; ruletimer1 60 endon"          // Add rule1 data saved at initial firmware load or when command reset is executed
+// Rule 2: Send data every 100 ms if current > 50 mA and stop when current < 50 mA
+  // char custom_rule2[] = "on Current#Amps>0.05 do backlog ruletimer2 1; rule3 1 endon on Rules#Timer=2 do backlog var1 %current%; var2 %voltage%; var3 %power%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; ruletimer2 1 endon on Current#Amps<0.05 do rule3 0 endon";
+ #define USER_RULE2 "on Current#Amps>0.05 do backlog ruletimer2 1; rule3 1 endon on Rules#Timer=2 do backlog var1 %current%; var2 %voltage%; var3 %power%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; ruletimer2 1 endon on Current#Amps<0.05 do rule3 0 endon"          // Add rule2 data saved at initial firmware load or when command reset is executed
 //  #define USER_RULE3 "<Any rule3 data>"          // Add rule3 data saved at initial firmware load or when command reset is executed
 
 //#define USE_SCRIPT                               // Add support for script (+17k code)
@@ -523,15 +527,15 @@
 // #define USE_ARILUX_RF                            // Add support for Arilux RF remote controller (+0k8 code, 252 iram (non 2.3.0))
 // #define USE_SHUTTER                              // Add Shutter support for up to 4 shutter with different motortypes (+11k code)
 #define USE_DEEPSLEEP                            // Add support for deepsleep (+1k code)
-#define USE_EXS_DIMMER                           // Add support for ES-Store Wi-Fi Dimmer (+1k5 code)
+// #define USE_EXS_DIMMER                           // Add support for ES-Store Wi-Fi Dimmer (+1k5 code)
 //  #define EXS_MCU_CMNDS                          // Add command to send MCU commands (+0k8 code)
 //#define USE_HOTPLUG                              // Add support for sensor HotPlug
-#define USE_DEVICE_GROUPS                        // Add support for device groups (+5k5 code)
-  #define DEVICE_GROUPS_ADDRESS 239,255,250,250  // Device groups multicast address
-  #define DEVICE_GROUPS_PORT 4447                // Device groups multicast port
-  #define USE_DEVICE_GROUPS_SEND                 // Add support for the DevGroupSend command (+0k6 code)
-#define USE_PWM_DIMMER                           // Add support for MJ-SD01/acenx/NTONPOWER PWM dimmers (+2k3 code, DGR=0k7)
-  #define USE_PWM_DIMMER_REMOTE                  // Add support for remote switches to PWM Dimmer (requires USE_DEVICE_GROUPS) (+0k6 code)
+// #define USE_DEVICE_GROUPS                        // Add support for device groups (+5k5 code)
+  // #define DEVICE_GROUPS_ADDRESS 239,255,250,250  // Device groups multicast address
+  // #define DEVICE_GROUPS_PORT 4447                // Device groups multicast port
+  // #define USE_DEVICE_GROUPS_SEND                 // Add support for the DevGroupSend command (+0k6 code)
+// #define USE_PWM_DIMMER                           // Add support for MJ-SD01/acenx/NTONPOWER PWM dimmers (+2k3 code, DGR=0k7)
+  // #define USE_PWM_DIMMER_REMOTE                  // Add support for remote switches to PWM Dimmer (requires USE_DEVICE_GROUPS) (+0k6 code)
 //#define USE_KEELOQ                               // Add support for Jarolift rollers by Keeloq algorithm (+4k5 code)
 // #define USE_SONOFF_D1                            // Add support for Sonoff D1 Dimmer (+0k7 code)
 // #define USE_SHELLY_DIMMER                        // Add support for Shelly Dimmer (+3k code)
@@ -568,10 +572,10 @@
 #define USE_COUNTER                              // Enable inputs as counter (+0k8 code)
 
 // -- Internal Analog input -----------------------
-//#define USE_ADC_VCC                              // Display Vcc in Power status. Disable for use as Analog input on selected devices
+#define USE_ADC_VCC                              // Display Vcc in Power status. Disable for use as Analog input on selected devices
 
 // -- One wire sensors ----------------------------
-#define USE_DS18x20                              // Add support for DS18x20 sensors with id sort, single scan and read retry (+2k6 code)
+// #define USE_DS18x20                              // Add support for DS18x20 sensors with id sort, single scan and read retry (+2k6 code)
 //  #define W1_PARASITE_POWER                      // Optimize for parasite powered sensors
 //  #define DS18x20_USE_ID_ALIAS                   // Add support aliasing for DS18x20 sensors. See comments in xsns_05 files (+0k5 code)
 
@@ -823,13 +827,13 @@
 //#define USE_LD2410                               // Add support for HLK-LD2410 24GHz smart wave motion sensor (+2k8 code)
 
 // -- Power monitoring sensors --------------------
-// #define USE_ENERGY_SENSOR                        // Add support for Energy Monitors (+14k code)
-// #define USE_ENERGY_COLUMN_GUI                    // Add support for column display in GUI (+0k5 code)
-// #define USE_ENERGY_MARGIN_DETECTION              // Add support for Energy Margin detection (+1k6 code)
-  // #define USE_ENERGY_POWER_LIMIT                 // Add additional support for Energy Power Limit detection (+1k2 code)
-// #define USE_ENERGY_DUMMY                         // Add support for dummy Energy monitor allowing user values (+0k7 code)
-// #define USE_HLW8012                              // Add support for HLW8012, BL0937 or HJL-01 Energy Monitor for Sonoff Pow and WolfBlitz
-// #define USE_CSE7766                              // Add support for CSE7766 Energy Monitor for Sonoff S31 and Pow R2
+#define USE_ENERGY_SENSOR                        // Add support for Energy Monitors (+14k code)
+#define USE_ENERGY_COLUMN_GUI                    // Add support for column display in GUI (+0k5 code)
+#define USE_ENERGY_MARGIN_DETECTION              // Add support for Energy Margin detection (+1k6 code)
+#define USE_ENERGY_POWER_LIMIT                 // Add additional support for Energy Power Limit detection (+1k2 code)
+#define USE_ENERGY_DUMMY                         // Add support for dummy Energy monitor allowing user values (+0k7 code)
+#define USE_HLW8012                              // Add support for HLW8012, BL0937 or HJL-01 Energy Monitor for Sonoff Pow and WolfBlitz
+#define USE_CSE7766                              // Add support for CSE7766 Energy Monitor for Sonoff S31 and Pow R2
 // #define USE_PZEM004T                             // Add support for PZEM004T Energy monitor (+2k code)
 // #define USE_PZEM_AC                              // Add support for PZEM014,016 Energy monitor (+1k1 code)
 // #define USE_PZEM_DC                              // Add support for PZEM003,017 Energy monitor (+1k1 code)
@@ -882,7 +886,7 @@
 // Code impact of IR full protocols is +90k code, 3k mem
 
 // -- IR Remote features - subset of IR protocols --------------------------
-#define USE_IR_REMOTE                            // Send IR remote commands using library IRremoteESP8266 (+4k3 code, 0k3 mem, 48 iram)
+// #define USE_IR_REMOTE                            // Send IR remote commands using library IRremoteESP8266 (+4k3 code, 0k3 mem, 48 iram)
   #define IR_SEND_INVERTED          false        // Invert the output. (default = false) e.g. LED is illuminated when GPIO is LOW rather than HIGH.
                                                  // Setting inverted to something other than the default could easily destroy your IR LED if you are overdriving it.
                                                  // Unless you REALLY know what you are doing, don't change this.
@@ -925,7 +929,7 @@
 
 // -- Zigbee interface ----------------------------
 //#define USE_ZIGBEE                                // Enable serial communication with Zigbee CC2530/CC2652 flashed with ZNP or EFR32 flashed with EZSP (+49k code, +3k mem)
-  #define USE_ZIGBEE_ZNP                         // Enable ZNP protocol, needed for CC2530/CC2652 based devices
+  // #define USE_ZIGBEE_ZNP                         // Enable ZNP protocol, needed for CC2530/CC2652 based devices
 //  #define USE_ZIGBEE_EZSP                        // Enable EZSP protocol, needed for EFR32 EmberZNet based devices, like Sonoff Zigbee bridge
                                                  // Note: USE_ZIGBEE_ZNP and USE_ZIGBEE_EZSP are mutually incompatible, you must select exactly one
   // #define USE_ZIGBEE_EEPROM                      // Use the EEPROM from the Sonoff ZBBridge to save Zigbee configuration and data
@@ -938,7 +942,7 @@
   #define USE_ZIGBEE_MANUFACTURER "Tasmota"      // reported "Manufacturer" (cluster 0000 / attribute 0004)
   #define USE_ZIGBEE_BATT_REPROBE (24*3600)      // Period in seconds during which we don't ask again for battery, default 1 day
   #define USE_ZIGBEE_BATT_REPROBE_PAUSE (3600)   // Min wait period when sending an autoprobe, default: wait at least 1 hour
-  #define USE_ZBBRIDGE_TLS                       // TLS support for zbbridge
+  // #define USE_ZBBRIDGE_TLS                       // TLS support for zbbridge
   #define USE_ZIGBEE_ZBBRIDGE_EEPROM 0x50        // I2C id for the ZBBridge EEPROM
   // #define USE_ZIGBEE_FORCE_NO_CHILDREN           // This feature forces `CONFIG_MAX_END_DEVICE_CHILDREN` to zero which means that the coordinator does not accept any direct child. End-devices must pair through a router.
                                                  // This may mitigate some battery drain issues with IKEA devices.
