@@ -108,7 +108,7 @@
 #define MQTT_PASS              "DVES_PASS"       // [MqttPassword] MQTT password
 
 #define MQTT_BUTTON_RETAIN     false             // [ButtonRetain] Button may send retain flag (false = off, true = on)
-#define MQTT_POWER_RETAIN      false             // [PowerRetain] Power status message may send retain flag (false = off, true = on)
+#define MQTT_POWER_RETAIN      true             // [PowerRetain] Power status message may send retain flag (false = off, true = on)
 #define MQTT_SWITCH_RETAIN     false             // [SwitchRetain] Switch may send retain flag (false = off, true = on)
 #define MQTT_SENSOR_RETAIN     false             // [SensorRetain] Sensor may send retain flag (false = off, true = on)
 #define MQTT_INFO_RETAIN       false             // [InfoRetain] Info may send retain flag (false = off, true = on)
@@ -161,7 +161,7 @@
 #define MQTT_INDEX_SEPARATOR   false             // [SetOption64] Enable "_" instead of "-" as sensor index separator
 #define MQTT_TUYA_RECEIVED     false             // [SetOption66] Enable TuyaMcuReceived messages over Mqtt
 #define MQTT_TLS_ENABLED       false             // [SetOption103] Enable TLS mode (requires TLS version)
-#define MQTT_TLS_FINGERPRINT   false             // [SetOption132] Force TLS fingerprint validation instead of CA (requires TLS version)
+#define MQTT_TLS_FINGERPRINT   true             // [SetOption132] Force TLS fingerprint validation instead of CA (requires TLS version)
 
 // -- HTTP ----------------------------------------
 #define WEB_SERVER             2                 // [WebServer] Web server (0 = Off, 1 = Start as User, 2 = Start as Admin)
@@ -323,7 +323,7 @@
 #define USE_AC_ZERO_CROSS_DIMMER                 // Requires USE_COUNTER and USE_LIGHT
 
 // -- Energy --------------------------------------
-#define ENERGY_VOLTAGE_ALWAYS  false             // [SetOption21] Enable show voltage even if powered off
+#define ENERGY_VOLTAGE_ALWAYS  true            // [SetOption21] Enable show voltage even if powered off
 #define ENERGY_DDS2382_MODE    false             // [SetOption71] Enable DDS2382 different Modbus registers for Active Energy (#6531)
 #define ENERGY_HARDWARE_TOTALS false             // [SetOption72] Enable hardware energy total counter as reference (#6561)
 
@@ -494,14 +494,13 @@
 // -- Rules or Script  ----------------------------
 // Select none or only one of the below defines USE_RULES or USE_SCRIPT
 #define USE_RULES                                // Add support for rules (+8k code)
-//  #define USE_EXPRESSION                         // Add support for expression evaluation in rules (+3k2 code, +64 bytes mem)
-//    #define SUPPORT_IF_STATEMENT                 // Add support for IF statement in rules (+4k2 code, -332 bytes mem)
+#define RULES_BUFFER_SIZE 2048
+ #define USE_EXPRESSION                         // Add support for expression evaluation in rules (+3k2 code, +64 bytes mem)
+   #define SUPPORT_IF_STATEMENT                 // Add support for IF statement in rules (+4k2 code, -332 bytes mem)
 // Rule 1: Send data every 6 hours (21600 seconds)
-// char custom_rule1[] = "on system#boot do ruletimer1 21600 endon on Rules#Timer=1 do backlog var1 %uptime%; var2 %voltage%; var3 %power%; var4 %totalpower%; var5 %status%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; publish your_topic/total_power %var4%; publish your_topic/status %var5%; ruletimer1 21600 endon";
- #define USER_RULE1 "on system#boot do ruletimer1 60 endon on Rules#Timer=1 do backlog var1 %uptime%; var2 %voltage%; var3 %power%; var4 %totalpower%; var5 %status%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; publish your_topic/total_power %var4%; publish your_topic/status %var5%; ruletimer1 60 endon"          // Add rule1 data saved at initial firmware load or when command reset is executed
+//  #define USER_RULE1 "on system#boot do ruletimer1 60 endon on Rules#Timer=1 do backlog var1 %uptime%; var2 %voltage%; var3 %power%; var4 %totalpower%; var5 %status%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; publish your_topic/total_power %var4%; publish your_topic/status %var5%; ruletimer1 60 endon"          // Add rule1 data saved at initial firmware load or when command reset is executed
 // Rule 2: Send data every 100 ms if current > 50 mA and stop when current < 50 mA
-  // char custom_rule2[] = "on Current#Amps>0.05 do backlog ruletimer2 1; rule3 1 endon on Rules#Timer=2 do backlog var1 %current%; var2 %voltage%; var3 %power%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; ruletimer2 1 endon on Current#Amps<0.05 do rule3 0 endon";
- #define USER_RULE2 "on Current#Amps>0.05 do backlog ruletimer2 1; rule3 1 endon on Rules#Timer=2 do backlog var1 %current%; var2 %voltage%; var3 %power%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; ruletimer2 1 endon on Current#Amps<0.05 do rule3 0 endon"          // Add rule2 data saved at initial firmware load or when command reset is executed
+//  #define USER_RULE2 "on Current#Amps>0.05 do backlog ruletimer2 1; rule3 1 endon on Rules#Timer=2 do backlog var1 %current%; var2 %voltage%; var3 %power%; publish your_topic/current %var1%; publish your_topic/voltage %var2%; publish your_topic/power %var3%; ruletimer2 1 endon on Current#Amps<0.05 do rule3 0 endon"          // Add rule2 data saved at initial firmware load or when command reset is executed
 //  #define USER_RULE3 "<Any rule3 data>"          // Add rule3 data saved at initial firmware load or when command reset is executed
 
 //#define USE_SCRIPT                               // Add support for script (+17k code)
@@ -911,12 +910,12 @@
 
   // When using 'USE_IR_REMOTE_FULL', parameters below
   // (USE_IR_REMOTE, USE_IR_RECEIVE, USE_IR_HVAC...) are IGNORED.
-  #define USE_IR_SEND_NEC                        // Support IRsend NEC protocol
-  #define USE_IR_SEND_RC5                        // Support IRsend Philips RC5 protocol
-  #define USE_IR_SEND_RC6                        // Support IRsend Philips RC6 protocol
+  // #define USE_IR_SEND_NEC                        // Support IRsend NEC protocol
+  // #define USE_IR_SEND_RC5                        // Support IRsend Philips RC5 protocol
+  // #define USE_IR_SEND_RC6                        // Support IRsend Philips RC6 protocol
 
   // Enable IR devoder via GPIO `IR Recv` - always enabled if `USE_IR_REMOTE_FULL`
-  #define USE_IR_RECEIVE                         // Support for IR receiver (+7k2 code, 264 iram)
+  // #define USE_IR_RECEIVE                         // Support for IR receiver (+7k2 code, 264 iram)
     #define IR_RCV_BUFFER_SIZE      100          // Max number of packets allowed in capture buffer (default 100 (*2 bytes ram))
     #define IR_RCV_TIMEOUT          15           // Number of milli-Seconds of no-more-data before we consider a message ended (default 15)
     #define IR_RCV_MIN_UNKNOWN_SIZE 6            // Set the smallest sized "UNKNOWN" message packets we actually care about (default 6, max 255)

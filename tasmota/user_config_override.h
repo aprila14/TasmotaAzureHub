@@ -41,6 +41,13 @@
 #ifndef SUPPORT_MQTT_EVENT
 #define SUPPORT_MQTT_EVENT
 #endif
+
+
+#define USER_RULE1 "Rule1 ON System#Boot DO Backlog Rule1 1; RuleTimer1 60; Teleperiod 60 ENDON ON Tele-ENERGY#Current DO Backlog Var1 %value% ENDON ON Tele-ENERGY#Voltage DO Backlog Var2 %value% ENDON ON Tele-ENERGY#Power DO Backlog Var3 %value% ENDON ON Tele-ENERGY#Total DO Backlog Var4 %value% ENDON ON rules#timer=1 DO Backlog Publish %topic%/current %Var1%; Publish %topic%/voltage %Var2%; Publish %topic%/power %Var3%; Publish %topic%/total_power %Var4%; RuleTimer1 60 ENDON"
+#define USER_RULE2 "Rule2 ON System#Boot DO Backlog Rule2 1; Rule2 5 ENDON ON ENERGY#Current>0.05 DO RuleTimer2 30 ELSE ENDON ON rules#timer=2 DO IF (ENERGY#Current > 0.05) Backlog Publish %topic%/current_fast %Var1%; Publish %topic%/voltage_fast %Var2%; Publish %topic%/power_fast %Var3%; RuleTimer2 30; Rule2 5 ENDIF ENDON"
+
+// #undef POWER_FACTOR_SUPPORT
+// #define POWER_FACTOR_SUPPORT 2
 // #define MQTT_TLS_FINGERPRINT   true
 // #define USER_SET_OPTION    "{""90"":1,""132"":1}"
 
